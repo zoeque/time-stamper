@@ -20,7 +20,7 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'io.vavr:vavr:0.10.3'
-    implementation 'org.bouncycastle:bcprov-jdk15on:1.68'
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.62'
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }

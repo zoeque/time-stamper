@@ -1,70 +1,65 @@
 package stamper.adapter;
 
 import io.vavr.control.Try;
-import java.io.File;
 import java.io.FileInputStream;
-import java.security.Key;
 import java.security.KeyStore;
-import java.security.Security;
-import java.security.cert.X509Certificate;
 import java.util.Enumeration;
 import lombok.extern.slf4j.Slf4j;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import stamper.domain.factory.CertificateFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * The interface class to read files.
  */
 @Slf4j
-@Service
+@Component
 public class FileReadAdapter implements IFileHandleAdapter {
   @Value("${zoeque.time.stamper.keystore.password}")
   String keyStorePassword;
 
-  BouncyCastleProvider bouncyCastleProvider;
   KeyStore keyStore;
-  FileInputStream fileInputStream;
-  CertificateFactory certificateFactory;
+  FileInputStream keyStoreInputStream;
 
-  public FileReadAdapter(BouncyCastleProvider bouncyCastleProvider,
-                         KeyStore keyStore,
-                         FileInputStream fileInputStream,
-                         CertificateFactory certificateFactory) {
-    this.bouncyCastleProvider = bouncyCastleProvider;
+  public FileReadAdapter(KeyStore keyStore,
+                         FileInputStream keyStoreInputStream) {
     this.keyStore = keyStore;
-    this.fileInputStream = fileInputStream;
-    this.certificateFactory = certificateFactory;
+    this.keyStoreInputStream = keyStoreInputStream;
   }
 
   @Override
-  public Try<File> handleFile(String file) {
+  public Try<byte[]> handleFile(String file) {
     try {
-      Security.addProvider(bouncyCastleProvider);
-      String alias = selectAliasForKeyStore().get();
-
-      // create certification file.
-      Key key = keyStore.getKey(alias, keyStorePassword.toCharArray());
-      X509Certificate certificate
-              = certificateFactory.createCertificate(alias).get();
-
+      return Try.success(readBinaryFile(file).get());
     } catch (Exception e) {
-      log.warn("Cannot create new timestamp file : {}", e.toString());
+      log.warn("Cannot read and convert the file by {}", e.toString());
       return Try.failure(e);
     }
-
-    return null;
   }
 
-  private Try<String> selectAliasForKeyStore() {
+  /**
+   * Select alias for the key store directory.
+   *
+   * @return The result {@link Try} with the String type alias.
+   */
+  public Try<String> selectAliasForKeyStore() {
     try {
-      keyStore.load(fileInputStream, keyStorePassword.toCharArray());
+      keyStore.load(keyStoreInputStream, keyStorePassword.toCharArray());
       Enumeration<String> aliases = keyStore.aliases();
       return Try.success(aliases.nextElement());
     } catch (Exception e) {
       log.warn("Cannot create alias to the key store : {}", e.toString());
       throw new IllegalStateException(e);
+    }
+  }
+
+  private Try<byte[]> readBinaryFile(String file) {
+    try (FileInputStream targetFileInputStream
+                 = new FileInputStream(file)) {
+      byte[] data = new byte[targetFileInputStream.available()];
+      targetFileInputStream.read(data);
+      return Try.success(data);
+    } catch (Exception e) {
+      return Try.failure(e);
     }
   }
 }

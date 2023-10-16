@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.security.KeyStore;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.hibernate.tuple.TimestampGenerators;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,7 +41,7 @@ public class TimeStamperConfiguration {
   }
 
   @Bean
-  public FileInputStream fileInputStream() {
+  public FileInputStream keyStoreInputStream() {
     try {
       return new FileInputStream(keyStorePath);
     } catch (Exception e) {

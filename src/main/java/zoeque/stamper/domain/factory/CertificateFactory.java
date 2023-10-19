@@ -1,13 +1,12 @@
-package stamper.domain.factory;
+package zoeque.stamper.domain.factory;
 
 import io.vavr.control.Try;
-import java.security.Key;
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import stamper.adapter.FileReadAdapter;
+import zoeque.stamper.adapter.FileReadAdapter;
 
 /**
  * The factory class to create new Certificate.

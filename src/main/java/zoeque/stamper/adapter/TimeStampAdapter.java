@@ -1,4 +1,4 @@
-package stamper.adapter;
+package zoeque.stamper.adapter;
 
 import io.vavr.control.Try;
 import java.net.URI;
@@ -9,8 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.tsp.TimeStampRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import stamper.domain.model.TimeStamperConstantModel;
-import stamper.usecase.service.TimeStampService;
+import zoeque.stamper.domain.model.TimeStamperConstantModel;
+import zoeque.stamper.usecase.service.HashingFileTimeStampService;
 
 /**
  * The adapter class of the gateway to the TSA server.
@@ -28,7 +28,7 @@ public class TimeStampAdapter {
 
   /**
    * Send request to the timestamp server and get its timestamp file.
-   * The request is sent from {@link TimeStampService}.
+   * The request is sent from {@link HashingFileTimeStampService}.
    *
    * @param timeStampRequest {@link TimeStampRequest} with the hashed file.
    * @return The {@link Try} with the instance of timestamp file.

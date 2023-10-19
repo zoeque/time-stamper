@@ -1,6 +1,7 @@
-package stamper.adapter;
+package zoeque.stamper.adapter;
 
 import io.vavr.control.Try;
+import java.io.File;
 import java.io.FileInputStream;
 import java.security.KeyStore;
 import java.util.Enumeration;
@@ -26,10 +27,21 @@ public class FileReadAdapter implements IFileHandleAdapter {
     this.keyStoreInputStream = keyStoreInputStream;
   }
 
-  @Override
-  public Try<byte[]> handleFile(String file) {
+  /**
+   * The implementation to handle files.
+   * Read files and write down the certification file to the given
+   * directory.
+   *
+   * @param file The converted byte file with an absolute path, String type.
+   * @return {@link File} instance with the result {@link Try}.
+   */
+  public Try<byte[]> handleFile(Object file) {
     try {
-      return Try.success(readBinaryFile(file).get());
+      if (!(file instanceof String)) {
+        throw new IllegalArgumentException("The argument must be String type");
+      }
+      String absoluteFilePath = (String) file;
+      return Try.success(readBinaryFile(absoluteFilePath).get());
     } catch (Exception e) {
       log.warn("Cannot read and convert the file by {}", e.toString());
       return Try.failure(e);

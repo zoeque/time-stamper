@@ -1,4 +1,4 @@
-package stamper.configuration;
+package zoeque.stamper.configuration;
 
 import java.io.FileInputStream;
 import java.net.http.HttpClient;
@@ -9,7 +9,7 @@ import org.bouncycastle.tsp.TimeStampRequestGenerator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import stamper.domain.model.TimeStamperConstantModel;
+import zoeque.stamper.domain.model.TimeStamperConstantModel;
 
 /**
  * The configuration file to create Spring beans.

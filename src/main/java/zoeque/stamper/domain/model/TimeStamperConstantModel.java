@@ -1,4 +1,4 @@
-package stamper.domain.model;
+package zoeque.stamper.domain.model;
 
 /**
  * The class for static final constants.

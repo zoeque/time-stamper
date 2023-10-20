@@ -1,10 +1,8 @@
 package zoeque.stamper.usecase.service;
 
 import io.vavr.control.Try;
-import java.security.Key;
 import java.security.KeyStore;
 import java.security.Security;
-import java.security.cert.X509Certificate;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -45,31 +43,40 @@ public class CertificationCreatorService {
     this.hashingTimeStampService = hashingTimeStampService;
   }
 
+  /**
+   * The process to create a timestamp file.
+   *
+   * @param file File with the absolute path
+   * @return {@link Try} with the given argument.
+   */
   public Try<String> createCertificate(String file) {
     try {
       Security.addProvider(bouncyCastleProvider);
-      String alias = readAdapter.selectAliasForKeyStore().get();
-
-      // create certification file.
-      Key key = keyStore.getKey(alias, keyStorePassword.toCharArray());
-      X509Certificate certificate
-              = certificateFactory.createCertificate(alias).get();
-
       byte[] targetFileBytes = readAdapter.handleFile(file).get();
 
       if (hashingMode) {
         // request the timestamp to the TSA server with hashed file
         Map<byte[], byte[]> timeStampFileMap
                 = hashingTimeStampService.requestTimeStamp(targetFileBytes).get();
+        Try<byte[]> writeTry = writeAdapter.handleFile(timeStampFileMap);
+        if (writeTry.isFailure()) {
+          log.warn("Cannot write the timestamp file : {}", writeTry.getCause().toString());
+          throw new IllegalStateException(writeTry.getCause());
+        }
       } else {
+        // request the timestamp to the TSA server
         byte[] timeStamp
                 = timeStampService.requestTimeStamp(targetFileBytes).get();
-        writeAdapter.handleFile(timeStamp);
+        Try<byte[]> writeTry = writeAdapter.handleFile(timeStamp);
+        if (writeTry.isFailure()) {
+          log.warn("Cannot write the timestamp file : {}", writeTry.getCause().toString());
+          throw new IllegalStateException(writeTry.getCause());
+        }
       }
+      return Try.success(file);
     } catch (Exception e) {
       log.warn("Cannot create new timestamp file : {}", e.toString());
       return Try.failure(e);
     }
-    return null;
   }
 }

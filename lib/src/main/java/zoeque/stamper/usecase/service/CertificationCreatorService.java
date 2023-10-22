@@ -1,7 +1,6 @@
 package zoeque.stamper.usecase.service;
 
 import io.vavr.control.Try;
-import java.security.KeyStore;
 import java.security.Security;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -10,35 +9,26 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import zoeque.stamper.adapter.FileReadAdapter;
 import zoeque.stamper.adapter.FileWriteAdapter;
-import zoeque.stamper.domain.factory.CertificateFactory;
 
 @Slf4j
 @Service
 public class CertificationCreatorService {
-  @Value("${zoeque.time.stamper.keystore.password}")
-  String keyStorePassword;
   @Value("${zoeque.time.stamper.hash:false}")
   boolean hashingMode;
   FileReadAdapter readAdapter;
   FileWriteAdapter writeAdapter;
   BouncyCastleProvider bouncyCastleProvider;
-  KeyStore keyStore;
-  CertificateFactory certificateFactory;
   TimeStampService timeStampService;
   HashingFileTimeStampService hashingTimeStampService;
 
   public CertificationCreatorService(FileReadAdapter readAdapter,
                                      FileWriteAdapter writeAdapter,
                                      BouncyCastleProvider bouncyCastleProvider,
-                                     KeyStore keyStore,
-                                     CertificateFactory certificateFactory,
                                      TimeStampService timeStampService,
                                      HashingFileTimeStampService hashingTimeStampService) {
     this.readAdapter = readAdapter;
     this.writeAdapter = writeAdapter;
     this.bouncyCastleProvider = bouncyCastleProvider;
-    this.keyStore = keyStore;
-    this.certificateFactory = certificateFactory;
     this.timeStampService = timeStampService;
     this.hashingTimeStampService = hashingTimeStampService;
   }

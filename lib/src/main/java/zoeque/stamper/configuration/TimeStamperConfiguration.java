@@ -17,8 +17,6 @@ import zoeque.stamper.domain.model.TimeStamperConstantModel;
 @Slf4j
 @Configuration
 public class TimeStamperConfiguration {
-  @Value("${zoeque.time.stamper.keystore.path}")
-  String keyStorePath;
 
   @Bean
   public BouncyCastleProvider bouncyCastleProvider() {
@@ -37,16 +35,6 @@ public class TimeStamperConfiguration {
       return KeyStore.getInstance(TimeStamperConstantModel.ENCODING_FORMAT);
     } catch (Exception e) {
       log.error("Cannot create new instance of KeyStore : {}", e.toString());
-      throw new IllegalStateException(e);
-    }
-  }
-
-  @Bean
-  public FileInputStream keyStoreInputStream() {
-    try {
-      return new FileInputStream(keyStorePath);
-    } catch (Exception e) {
-      log.error("Cannot create new instance of FileInputStream : {}", e.toString());
       throw new IllegalStateException(e);
     }
   }

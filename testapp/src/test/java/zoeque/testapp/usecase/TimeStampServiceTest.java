@@ -1,4 +1,4 @@
-package usecase;
+package zoeque.testapp.usecase;
 
 import io.vavr.control.Try;
 import org.junit.jupiter.api.Assertions;

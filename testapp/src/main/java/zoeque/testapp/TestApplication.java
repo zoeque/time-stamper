@@ -1,12 +1,14 @@
+package zoeque.testapp;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
-@SpringBootApplication(scanBasePackages = {"zoeque"})
-@ComponentScan(basePackages = {"zoeque"})
-@ConfigurationPropertiesScan(basePackages = {"zoeque"})
+@SpringBootApplication
+@ComponentScan(basePackages = {"zoeque.stamper", "zoeque.testapp"})
+@ConfigurationPropertiesScan(basePackages = {"zoeque.stamper", "zoeque.testapp"})
 public class TestApplication {
   public static void main(String... args) {
     ConfigurableApplicationContext appContext

@@ -1,7 +1,8 @@
 .gradle
 **/build/
+**/h2db/
 !lib/**/build/
-
+.class
 # Ignore Gradle GUI config
 gradle-app.setting
 
@@ -21,4 +22,3 @@ gradle-app.setting
 .classpath
 
 /.idea
-.db

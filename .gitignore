@@ -1,5 +1,6 @@
 .gradle
 **/build/
+/lib/build
 !lib/**/build/
 
 # Ignore Gradle GUI config
@@ -21,4 +22,5 @@ gradle-app.setting
 .classpath
 
 /.idea
+**/h2
 .db

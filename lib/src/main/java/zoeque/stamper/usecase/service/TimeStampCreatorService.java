@@ -12,7 +12,7 @@ import zoeque.stamper.adapter.FileWriteAdapter;
 
 @Slf4j
 @Service
-public class CertificationCreatorService {
+public class TimeStampCreatorService {
   @Value("${zoeque.time.stamper.hash:false}")
   boolean hashingMode;
   FileReadAdapter readAdapter;
@@ -21,11 +21,11 @@ public class CertificationCreatorService {
   TimeStampService timeStampService;
   HashingFileTimeStampService hashingTimeStampService;
 
-  public CertificationCreatorService(FileReadAdapter readAdapter,
-                                     FileWriteAdapter writeAdapter,
-                                     BouncyCastleProvider bouncyCastleProvider,
-                                     TimeStampService timeStampService,
-                                     HashingFileTimeStampService hashingTimeStampService) {
+  public TimeStampCreatorService(FileReadAdapter readAdapter,
+                                 FileWriteAdapter writeAdapter,
+                                 BouncyCastleProvider bouncyCastleProvider,
+                                 TimeStampService timeStampService,
+                                 HashingFileTimeStampService hashingTimeStampService) {
     this.readAdapter = readAdapter;
     this.writeAdapter = writeAdapter;
     this.bouncyCastleProvider = bouncyCastleProvider;

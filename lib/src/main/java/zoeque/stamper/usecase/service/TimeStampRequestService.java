@@ -10,9 +10,14 @@ import org.springframework.stereotype.Service;
 import zoeque.stamper.adapter.FileReadAdapter;
 import zoeque.stamper.adapter.FileWriteAdapter;
 
+/**
+ * The service class to create time stamp file.
+ * The request based on the parameter is sent to the
+ * {@link ITimeStampService} and create tsr file by the service.
+ */
 @Slf4j
 @Service
-public class TimeStampCreatorService {
+public class TimeStampRequestService {
   @Value("${zoeque.time.stamper.hash:false}")
   boolean hashingMode;
   FileReadAdapter readAdapter;
@@ -21,7 +26,7 @@ public class TimeStampCreatorService {
   TimeStampService timeStampService;
   HashingFileTimeStampService hashingTimeStampService;
 
-  public TimeStampCreatorService(FileReadAdapter readAdapter,
+  public TimeStampRequestService(FileReadAdapter readAdapter,
                                  FileWriteAdapter writeAdapter,
                                  BouncyCastleProvider bouncyCastleProvider,
                                  TimeStampService timeStampService,

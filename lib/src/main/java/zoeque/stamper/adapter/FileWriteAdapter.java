@@ -3,6 +3,7 @@ package zoeque.stamper.adapter;
 import io.vavr.control.Try;
 import java.io.FileOutputStream;
 import java.util.Map;
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +23,7 @@ public class FileWriteAdapter implements IFileHandleAdapter {
     try {
       byte[] byteFile = (byte[]) file;
       FileOutputStream fos = new FileOutputStream(
-              file + ".tsr"
+              UUID.randomUUID() + ".tsr"
       );
       fos.write(byteFile);
       return Try.success(byteFile);

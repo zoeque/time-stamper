@@ -3,7 +3,6 @@ package zoeque.stamper.usecase.service;
 import io.vavr.control.Try;
 import java.security.MessageDigest;
 import java.util.HashMap;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.tsp.TSPAlgorithms;
 import org.bouncycastle.tsp.TimeStampRequest;
@@ -43,9 +42,8 @@ public class HashingFileTimeStampService
    * encoded by the definition in {@link TimeStamperConstantModel}.
    * The value of the map instance has the timestamp file.
    */
-  public Try<Map<byte[], byte[]>> requestTimeStamp(byte[] fileBytes) {
+  public Try<byte[]> requestTimeStamp(byte[] fileBytes) {
     try {
-      Map<byte[], byte[]> timeStampBytesMap = new HashMap<>();
       // Request the certificate
       timeStampRequestGenerator.setCertReq(true);
       byte[] hashedFile = hashing(fileBytes).get();
@@ -53,8 +51,7 @@ public class HashingFileTimeStampService
       // send request to the TSA server
       TimeStampRequest request
               = timeStampRequestGenerator.generate(TSPAlgorithms.SHA256, hashedFile);
-      timeStampBytesMap.put(hashedFile, timeStampAdapter.sendRequest(request).get());
-      return Try.success(timeStampBytesMap);
+      return Try.success(timeStampAdapter.sendRequest(request).get());
     } catch (Exception e) {
       log.warn("Cannot create the timestamp response file : {}", e.toString());
       return Try.failure(e);

@@ -17,7 +17,7 @@ public class TestService {
 
   public Try<String> execute(String file) {
     try {
-      Try<String> certificateTry = timeStampRequestService.createCertificate(file);
+      Try<String> certificateTry = timeStampRequestService.createTimeStamp(file);
       return Try.success(certificateTry.get());
     } catch (Exception e) {
       return Try.failure(e);

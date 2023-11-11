@@ -2,7 +2,7 @@ package zoeque.stamper.adapter;
 
 import io.vavr.control.Try;
 import java.io.FileOutputStream;
-import java.util.Map;
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -15,14 +15,13 @@ public class FileWriteAdapter implements IFileHandleAdapter {
   /**
    * Write the timestamp response as the file name + tsr extension.
    *
-   * @param file target file with the absolute path.
+   * @param byteFile target file with the absolute path.
    * @return {@link Try} with the byte array of created file.
    */
-  public Try<byte[]> handleFile(Object file) {
+  public Try<byte[]> handleFile(byte[] byteFile) {
     try {
-      byte[] byteFile = (byte[]) file;
       FileOutputStream fos = new FileOutputStream(
-              file + ".tsr"
+              UUID.randomUUID() + ".tsr"
       );
       fos.write(byteFile);
       return Try.success(byteFile);
@@ -36,27 +35,25 @@ public class FileWriteAdapter implements IFileHandleAdapter {
    * Write the timestamp response and base hash file.
    * Timestamp file is named as file name + tsr extension.
    *
-   * @param file    The file with absolute path that is based on the timestamp request.
-   * @param fileMap Map with key = hashed file and value = timestamp response.
+   * @param hashedFile   The file with hashed by the SHA-256.
+   * @param responseFile The timestamp response based on hashedFile..
    * @return {@link Try} with the timestamp response.
    */
-  public Try<byte[]> handleFile(String file, Map<byte[], byte[]> fileMap) {
+  public Try<byte[]> handleFile(byte[] hashedFile, byte[] responseFile) {
     try {
-      byte[] tsResponse = null;
       // here loops only one time
-      for (Map.Entry<byte[], byte[]> entry : fileMap.entrySet()) {
-        try (FileOutputStream fosForResponse = new FileOutputStream(
-                file + ".tsr"
-        );
-             FileOutputStream fosForHashedFile = new FileOutputStream(
-                     file + ".hash"
-             )) {
-          tsResponse = entry.getValue();
-          fosForHashedFile.write(entry.getKey());
-          fosForResponse.write(tsResponse);
-        }
+      try (FileOutputStream fosForResponse = new FileOutputStream(
+              UUID.randomUUID() + ".tsr"
+      );
+           FileOutputStream fosForHashedFile = new FileOutputStream(
+                   hashedFile + ".hash"
+           )) {
+        fosForHashedFile.write(hashedFile);
+        fosForResponse.write(responseFile);
+      } catch (RuntimeException e) {
+        throw new RuntimeException("Cannot write the created files : " + e.toString());
       }
-      return Try.success(tsResponse);
+      return Try.success(responseFile);
     } catch (Exception e) {
       return Try.failure(e);
     }

@@ -2,7 +2,6 @@ package zoeque.stamper.usecase.service;
 
 import io.vavr.control.Try;
 import java.security.Security;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,9 +9,14 @@ import org.springframework.stereotype.Service;
 import zoeque.stamper.adapter.FileReadAdapter;
 import zoeque.stamper.adapter.FileWriteAdapter;
 
+/**
+ * The service class to create time stamp file.
+ * The request based on the parameter is sent to the
+ * {@link ITimeStampService} and create tsr file by the service.
+ */
 @Slf4j
 @Service
-public class TimeStampCreatorService {
+public class TimeStampRequestService {
   @Value("${zoeque.time.stamper.hash:false}")
   boolean hashingMode;
   FileReadAdapter readAdapter;
@@ -21,7 +25,7 @@ public class TimeStampCreatorService {
   TimeStampService timeStampService;
   HashingFileTimeStampService hashingTimeStampService;
 
-  public TimeStampCreatorService(FileReadAdapter readAdapter,
+  public TimeStampRequestService(FileReadAdapter readAdapter,
                                  FileWriteAdapter writeAdapter,
                                  BouncyCastleProvider bouncyCastleProvider,
                                  TimeStampService timeStampService,
@@ -39,16 +43,16 @@ public class TimeStampCreatorService {
    * @param file File with the absolute path
    * @return {@link Try} with the given argument.
    */
-  public Try<String> createCertificate(String file) {
+  public Try<String> createTimeStamp(String file) {
     try {
       Security.addProvider(bouncyCastleProvider);
       byte[] targetFileBytes = readAdapter.handleFile(file).get();
 
       if (hashingMode) {
         // request the timestamp to the TSA server with hashed file
-        Map<byte[], byte[]> timeStampFileMap
+        byte[] requestTry
                 = hashingTimeStampService.requestTimeStamp(targetFileBytes).get();
-        Try<byte[]> writeTry = writeAdapter.handleFile(timeStampFileMap);
+        Try<byte[]> writeTry = writeAdapter.handleFile(requestTry);
         if (writeTry.isFailure()) {
           log.warn("Cannot write the timestamp file : {}", writeTry.getCause().toString());
           throw new IllegalStateException(writeTry.getCause());

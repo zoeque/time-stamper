@@ -4,6 +4,7 @@ import io.vavr.control.Try;
 import java.io.FileOutputStream;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,6 +13,14 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class FileWriteAdapter implements IFileHandleAdapter {
+
+  String artifactDirectory;
+
+  public FileWriteAdapter(@Value("${zoeque.time.stamper.artifact.directory}")
+                          String artifactDirectory) {
+    this.artifactDirectory = artifactDirectory;
+  }
+
   /**
    * Write the timestamp response as the file name + tsr extension.
    *
@@ -21,7 +30,8 @@ public class FileWriteAdapter implements IFileHandleAdapter {
   public Try<byte[]> handleFile(byte[] byteFile) {
     try {
       FileOutputStream fos = new FileOutputStream(
-              UUID.randomUUID() + ".tsr"
+              artifactDirectory + UUID.randomUUID() + ".tsr",
+              false
       );
       fos.write(byteFile);
       return Try.success(byteFile);
@@ -43,10 +53,10 @@ public class FileWriteAdapter implements IFileHandleAdapter {
     try {
       // here loops only one time
       try (FileOutputStream fosForResponse = new FileOutputStream(
-              UUID.randomUUID() + ".tsr"
+              artifactDirectory + UUID.randomUUID() + ".tsr"
       );
            FileOutputStream fosForHashedFile = new FileOutputStream(
-                   hashedFile + ".hash"
+                   artifactDirectory + hashedFile + ".hash"
            )) {
         fosForHashedFile.write(hashedFile);
         fosForResponse.write(responseFile);

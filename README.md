@@ -1,6 +1,6 @@
 # Time stamper
 ## Overview
-The library to create time stamp certification files easily.
+The library to create time stamp response files easily.
 
 ## Structure  
 - lib
@@ -19,6 +19,10 @@ for read and write files, send request to the timestamp CA server and the servic
 
 
 ## Usage
+First of all, create instance of `TimeStampRequestService` as a Bean of the main application,
+or create new instance of the class.  
+Call `createTimeStamp(String)` method and give the file directory as an absolute path to this method.  
+Created timestamp is returned with the result Try, provided by the vavr.io library.
 
 ## Settings
 Add parameters bellow into application.properties.

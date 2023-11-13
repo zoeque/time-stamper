@@ -28,8 +28,11 @@ Created timestamp is returned with the result Try, provided by the vavr.io libra
 Add parameters bellow into application.properties.
 ```properties
 zoeque.time.stamper.tsa.url=http://eswg.jnsa.org/freetsa
+zoeque.time.stamper.artifact.directory=C:\work\tsr\
 ```  
 The parameter `zoeque.time.stamper.tsa.url` is set the URL of TSA server.  
+`zoeque.time.stamper.artifact.directory` is a parameter that response file is saved.  
+Note that this parameter must be ended by / or \ .
 The default flow performs;
 ```
 Plane file -> create hashed file by SHA-256 -> create timestamp based on hashed file -> save both files

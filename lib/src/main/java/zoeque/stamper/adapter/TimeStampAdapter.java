@@ -10,7 +10,7 @@ import org.bouncycastle.tsp.TimeStampRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import zoeque.stamper.domain.model.TimeStamperConstantModel;
-import zoeque.stamper.usecase.service.HashingFileTimeStampService;
+import zoeque.stamper.usecase.service.Sha256FileSenderService;
 
 /**
  * The adapter class of the gateway to the TSA server.
@@ -28,7 +28,7 @@ public class TimeStampAdapter {
 
   /**
    * Send request to the timestamp server and get its timestamp file.
-   * The request is sent from {@link HashingFileTimeStampService}.
+   * The request is sent from {@link Sha256FileSenderService}.
    *
    * @param timeStampRequest {@link TimeStampRequest} with the hashed file.
    * @return The {@link Try} with the instance of timestamp file.

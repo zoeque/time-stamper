@@ -2,6 +2,9 @@ package zoeque.stamper.adapter;
 
 import io.vavr.control.Try;
 import java.io.FileOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +32,7 @@ public class FileWriteAdapter implements IFileHandleAdapter {
    */
   public Try<byte[]> handleFile(byte[] byteFile) {
     try {
+      createDirectory();
       FileOutputStream fos = new FileOutputStream(
               artifactDirectory + UUID.randomUUID() + ".tsr",
               false
@@ -51,6 +55,7 @@ public class FileWriteAdapter implements IFileHandleAdapter {
    */
   public Try<byte[]> handleFile(byte[] hashedFile, byte[] responseFile) {
     try {
+      createDirectory();
       // here loops only one time
       try (FileOutputStream fosForResponse = new FileOutputStream(
               artifactDirectory + UUID.randomUUID() + ".tsr"
@@ -66,6 +71,16 @@ public class FileWriteAdapter implements IFileHandleAdapter {
       return Try.success(responseFile);
     } catch (Exception e) {
       return Try.failure(e);
+    }
+  }
+
+  private void createDirectory() {
+    try {
+      String pathStr = artifactDirectory;
+      Path path = Paths.get(pathStr);
+      Files.createDirectory(path);
+    } catch (Exception e) {
+      log.warn("Cannot create the artifact directory");
     }
   }
 }

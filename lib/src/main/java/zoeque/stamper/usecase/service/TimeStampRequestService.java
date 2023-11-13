@@ -22,19 +22,16 @@ public class TimeStampRequestService {
   FileReadAdapter readAdapter;
   FileWriteAdapter writeAdapter;
   BouncyCastleProvider bouncyCastleProvider;
-  TimeStampService timeStampService;
-  HashingFileTimeStampService hashingTimeStampService;
+  Sha256FileSenderService sha256FileSenderService;
 
   public TimeStampRequestService(FileReadAdapter readAdapter,
                                  FileWriteAdapter writeAdapter,
                                  BouncyCastleProvider bouncyCastleProvider,
-                                 TimeStampService timeStampService,
-                                 HashingFileTimeStampService hashingTimeStampService) {
+                                 Sha256FileSenderService sha256FileSenderService) {
     this.readAdapter = readAdapter;
     this.writeAdapter = writeAdapter;
     this.bouncyCastleProvider = bouncyCastleProvider;
-    this.timeStampService = timeStampService;
-    this.hashingTimeStampService = hashingTimeStampService;
+    this.sha256FileSenderService = sha256FileSenderService;
   }
 
   /**
@@ -48,24 +45,13 @@ public class TimeStampRequestService {
       Security.addProvider(bouncyCastleProvider);
       byte[] targetFileBytes = readAdapter.handleFile(file).get();
 
-      if (hashingMode) {
-        // request the timestamp to the TSA server with hashed file
-        byte[] requestTry
-                = hashingTimeStampService.requestTimeStamp(targetFileBytes).get();
-        Try<byte[]> writeTry = writeAdapter.handleFile(requestTry);
-        if (writeTry.isFailure()) {
-          log.warn("Cannot write the timestamp file : {}", writeTry.getCause().toString());
-          throw new IllegalStateException(writeTry.getCause());
-        }
-      } else {
-        // request the timestamp to the TSA server
-        byte[] timeStamp
-                = timeStampService.requestTimeStamp(targetFileBytes).get();
-        Try<byte[]> writeTry = writeAdapter.handleFile(timeStamp);
-        if (writeTry.isFailure()) {
-          log.warn("Cannot write the timestamp file : {}", writeTry.getCause().toString());
-          throw new IllegalStateException(writeTry.getCause());
-        }
+      // request the timestamp to the TSA server with hashed file
+      byte[] requestTry
+              = sha256FileSenderService.requestTimeStamp(targetFileBytes).get();
+      Try<byte[]> writeTry = writeAdapter.handleFile(requestTry);
+      if (writeTry.isFailure()) {
+        log.warn("Cannot write the timestamp file : {}", writeTry.getCause().toString());
+        throw new IllegalStateException(writeTry.getCause());
       }
       return Try.success(file);
     } catch (Exception e) {

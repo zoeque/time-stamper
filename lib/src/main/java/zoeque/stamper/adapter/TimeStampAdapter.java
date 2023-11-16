@@ -10,7 +10,7 @@ import org.bouncycastle.tsp.TimeStampRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import zoeque.stamper.domain.model.TimeStamperConstantModel;
-import zoeque.stamper.usecase.service.Sha256FileSenderService;
+import zoeque.stamper.usecase.service.creator.Sha256FileSenderService;
 
 /**
  * The adapter class of the gateway to the TSA server.
@@ -31,9 +31,9 @@ public class TimeStampAdapter {
    * The request is sent from {@link Sha256FileSenderService}.
    *
    * @param timeStampRequest {@link TimeStampRequest} with the hashed file.
-   * @return The {@link Try} with the instance of timestamp file.
+   * @return The {@link Try} with the instance of the {@link HttpResponse}.
    */
-  public Try<byte[]> sendRequest(TimeStampRequest timeStampRequest) {
+  public Try<HttpResponse<byte[]>> sendRequest(TimeStampRequest timeStampRequest) {
     try {
       HttpRequest request = HttpRequest.newBuilder()
               .uri(URI.create(tsaServerUrl))
@@ -43,7 +43,7 @@ public class TimeStampAdapter {
       HttpResponse<byte[]> response
               = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
       if (response.statusCode() == TimeStamperConstantModel.HTTP_OK) {
-        return Try.success(response.body());
+        return Try.success(response);
       } else {
         log.warn("TSA server returns bad response : {}", response.statusCode());
         throw new IllegalStateException();

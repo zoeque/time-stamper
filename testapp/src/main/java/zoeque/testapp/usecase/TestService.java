@@ -2,7 +2,7 @@ package zoeque.testapp.usecase;
 
 import io.vavr.control.Try;
 import org.springframework.stereotype.Service;
-import zoeque.stamper.usecase.service.TimeStampRequestService;
+import zoeque.stamper.usecase.service.creator.TimeStampRequestService;
 
 /**
  * Create new timestamp of given file

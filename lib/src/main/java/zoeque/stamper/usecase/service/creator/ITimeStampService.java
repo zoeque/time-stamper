@@ -1,4 +1,4 @@
-package zoeque.stamper.usecase.service;
+package zoeque.stamper.usecase.service.creator;
 
 /**
  * The service interface for timestamp create services.

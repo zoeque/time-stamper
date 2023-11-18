@@ -7,10 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.tsp.TimeStampResponse;
 import org.bouncycastle.tsp.TimeStampToken;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import zoeque.stamper.adapter.FileReadAdapter;
 import zoeque.stamper.adapter.FileWriteAdapter;
+import zoeque.stamper.usecase.dto.TimeStampResponseFile;
 
 /**
  * The service class to create time stamp file.
@@ -51,7 +51,8 @@ public class TimeStampRequestService {
       // request the timestamp to the TSA server with hashed file
       HttpResponse<byte[]> response
               = sha256FileSenderService.requestTimeStamp(targetFileBytes).get();
-      Try<byte[]> writeTry = writeAdapter.handleFile(response.body());
+      TimeStampResponseFile responseFile = new TimeStampResponseFile(response.body());
+      Try<byte[]> writeTry = writeAdapter.handleFile(responseFile);
       if (writeTry.isFailure()) {
         log.warn("Cannot write the timestamp file : {}", writeTry.getCause().toString());
         throw new IllegalStateException(writeTry.getCause());

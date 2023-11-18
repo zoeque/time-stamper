@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import zoeque.stamper.usecase.dto.TimeStampResponseFile;
 
 /**
  * The file adapter to write the timestamp file.
@@ -28,16 +29,16 @@ public class FileWriteAdapter implements IFileHandleAdapter {
   /**
    * Write the timestamp response as the file name + tsr extension.
    *
-   * @param byteFile target file with the absolute path.
+   * @param responseFile The response file received from CA server.
    * @return {@link Try} with the byte array of created file.
    */
-  public Try<byte[]> handleFile(byte[] byteFile) {
+  public Try<byte[]> handleFile(TimeStampResponseFile responseFile) {
     createDirectory();
     try (FileOutputStream fos = new FileOutputStream(
             artifactDirectory + UUID.randomUUID() + ".tsr",
             false)) {
-      fos.write(byteFile);
-      return Try.success(byteFile);
+      fos.write(responseFile.file());
+      return Try.success(responseFile.file());
     } catch (Exception e) {
       log.warn("Cannot write the timestamp response : {}", e.toString());
       return Try.failure(e);

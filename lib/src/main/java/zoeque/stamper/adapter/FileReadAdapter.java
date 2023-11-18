@@ -24,13 +24,9 @@ public class FileReadAdapter implements IFileHandleAdapter {
    * @param file The converted byte file with an absolute path, String type.
    * @return {@link File} instance with the result {@link Try}.
    */
-  public Try<byte[]> handleFile(Object file) {
+  public Try<byte[]> handleFile(String file) {
     try {
-      if (!(file instanceof String)) {
-        throw new IllegalArgumentException("The argument must be String type");
-      }
-      String absoluteFilePath = (String) file;
-      return Try.success(readBinaryFile(absoluteFilePath).get());
+      return Try.success(readBinaryFile(file).get());
     } catch (Exception e) {
       log.warn("Cannot read and convert the file by {}", e.toString());
       return Try.failure(e);

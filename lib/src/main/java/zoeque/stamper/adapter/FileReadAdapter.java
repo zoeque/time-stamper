@@ -3,7 +3,10 @@ package zoeque.stamper.adapter;
 import io.vavr.control.Try;
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,8 +15,11 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class FileReadAdapter implements IFileHandleAdapter<String> {
+  String artifactDirectory;
 
-  public FileReadAdapter() {
+  public FileReadAdapter(@Value("${zoeque.time.stamper.artifact.directory}")
+                         String artifactDirectory) {
+    this.artifactDirectory = artifactDirectory;
   }
 
   /**
@@ -29,6 +35,31 @@ public class FileReadAdapter implements IFileHandleAdapter<String> {
       return Try.success(readBinaryFile(file).get());
     } catch (Exception e) {
       log.warn("Cannot read and convert the file by {}", e.toString());
+      return Try.failure(e);
+    }
+  }
+
+  /**
+   * Find all response files in artifact directory.
+   *
+   * @param artifactDir The target directory.
+   * @return The list of the tsr(response) files.
+   */
+  public Try<List<String>> handleResponses(String artifactDir) {
+    try {
+      List<String> responseFileList = new ArrayList<>();
+
+      File directory = new File(artifactDir);
+      File[] files = directory.listFiles();
+      if (files != null) {
+        for (File file : files) {
+          if (file.isFile() && file.getName().endsWith(".tsr")) {
+            responseFileList.add(file.toString());
+          }
+        }
+      }
+      return Try.success(responseFileList);
+    } catch (Exception e) {
       return Try.failure(e);
     }
   }

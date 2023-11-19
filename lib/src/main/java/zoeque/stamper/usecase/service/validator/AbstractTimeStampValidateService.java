@@ -34,7 +34,8 @@ public abstract class AbstractTimeStampValidateService {
               = new TimeStampResponse(
               readAdapter.handleFile(responsePath).get());
       TimeStampToken token = response.getTimeStampToken();
-      return true; // TODO
+      return token == null ? false : true;
+
     } catch (Exception e) {
       log.warn("Cannot validate the timestamp file :{}", e.toString());
       throw new IllegalStateException(e);

@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-public class FileWriteAdapter implements IFileHandleAdapter {
+public class FileWriteAdapter implements IFileHandleAdapter<byte[]> {
 
   String artifactDirectory;
 

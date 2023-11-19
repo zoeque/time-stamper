@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-public class FileReadAdapter implements IFileHandleAdapter {
+public class FileReadAdapter implements IFileHandleAdapter<String> {
 
   public FileReadAdapter() {
   }

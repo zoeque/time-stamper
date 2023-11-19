@@ -17,7 +17,7 @@ import zoeque.stamper.usecase.dto.TimeStampResponseFile;
  */
 @Slf4j
 @Component
-public class FileWriteAdapter implements IFileHandleAdapter {
+public class FileWriteAdapter implements IFileHandleAdapter<byte[]> {
 
   String artifactDirectory;
 
